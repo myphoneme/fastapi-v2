@@ -78,5 +78,3 @@ venv.bak/
 .DS_Store
 Thumbs.db
 
-# Ignore this file
-app/routers/api.py
