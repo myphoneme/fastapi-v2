@@ -8,7 +8,18 @@ from sqlalchemy.orm import Session
 from app.routers import users,vm_master,vm_status,api
 from fastapi.staticfiles import StaticFiles
 from app.core.auth import get_current_user   
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
+
+
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 Base.metadata.create_all(bind = engine)
 app.mount("/logs", StaticFiles(directory="uploads/logs"), name="logs")
