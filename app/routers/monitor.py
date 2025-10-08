@@ -1,11 +1,11 @@
 import threading
 import time
 import subprocess
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter #, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.crud.vm_master import get_all_master_vms
-from app.core.auth import get_current_user  
+# from app.core.auth import get_current_user  
 from app.schemas.monitor import VMRequest
 from app.utils.ssh_client import check_vm
 
