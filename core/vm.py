@@ -1,6 +1,7 @@
 import mysql.connector
 import requests
 import json
+import datetime
 
 # Connect to the database where both tables exist: vm_database
 db = mysql.connector.connect(
@@ -104,9 +105,9 @@ for vm_id, ip, username, password in vms:
 
         # Insert into vm_status table
         cursor.execute("""
-            INSERT INTO vm_status (vm_id, ip, status, os, cpu_utilization, memory_utilization, disk_utilization)
-            VALUES (%s,%s, %s, %s, %s, %s, %s)
-        """, (vm_id,ip ,status, os_type, cpu_usage, memory_usage, disk_usage))
+            INSERT INTO vm_status (vm_id, ip, status, os, cpu_utilization, memory_utilization, disk_utilization, created_at, is_active)
+            VALUES (%s,%s, %s, %s, %s, %s, %s,%s,%s)
+        """, (vm_id, ip, status, os_type, cpu_usage, memory_usage, disk_usage, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 1))
         db.commit()
 
         print(f"Status data saved for VM {ip}")
