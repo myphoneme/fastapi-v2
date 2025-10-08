@@ -7,6 +7,7 @@ class VMStatus(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     vm_id = Column(Integer, ForeignKey('vm_master.id'), nullable=False)
+    ip = Column(String(50), nullable=False)
     status = Column(String(20), nullable=False)
     os = Column(String(50), nullable=True)
     cpu_utilization = Column(String(50), nullable=True)
@@ -16,3 +17,4 @@ class VMStatus(Base):
     is_active = Column(Integer, default=1, nullable=True)
 
     vm_master = relationship("VMMaster", back_populates="vm_statuses")
+    

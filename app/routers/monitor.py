@@ -6,8 +6,10 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.crud.vm_master import get_all_master_vms
 from app.core.auth import get_current_user  
+from app.schemas.monitor import VMRequest
+from app.utils.ssh_client import check_vm
 
-router = APIRouter(prefix="/monitor", tags=["VM Monitoring"], dependencies=[Depends(get_current_user)])
+router = APIRouter(prefix="/monitor", tags=["VM Monitoring"]) #, dependencies=[Depends(get_current_user)]
 
 # Global dictionary to store VM reachability status
 vm_status_cache = {}
@@ -26,7 +28,6 @@ def ping_ip(ip: str) -> bool:
         return False
 
 def monitor_vms(db_session_factory):
-    """Background thread to monitor all VMs every second."""
     while True:
         db: Session = next(db_session_factory())
         vms = get_all_master_vms(db)
@@ -44,7 +45,11 @@ def start_monitoring_thread(db_session_factory):
 # Start the monitoring thread when the module is imported
 start_monitoring_thread(get_db)
 
-@router.get("/vm-status")
+@router.get("/ping")
 def get_vm_status():
     """API endpoint to get the latest reachability status of all VMs."""
     return list(vm_status_cache.values())
+
+@router.post("/utilization")
+def vm_status(request: VMRequest):
+    return check_vm(request.ip, request.username, request.password)

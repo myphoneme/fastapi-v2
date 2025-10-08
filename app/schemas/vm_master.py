@@ -31,6 +31,7 @@ class VMMasterResponse(VMMasterBase):
     id: int
     created_at: datetime
     updated_at: datetime
+    
 
     class Config:
         orm_mode = True

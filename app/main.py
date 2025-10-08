@@ -5,7 +5,7 @@ from sqlalchemy import text
 from app.database import engine
 from app.models import Base
 from sqlalchemy.orm import Session
-from app.routers import users,vm_master,vm_status,api
+from app.routers import users,vm_master,vm_status,monitor
 from fastapi.staticfiles import StaticFiles
 from app.core.auth import get_current_user   
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,7 +28,7 @@ app.include_router(users.auth)
 app.include_router(users.user)
 app.include_router(vm_master.router)
 app.include_router(vm_status.router)
-app.include_router(api.router)
+app.include_router(monitor.router)
 
 @app.get("/")
 def root():
