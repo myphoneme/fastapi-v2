@@ -2,7 +2,14 @@ import mysql.connector
 import requests
 import json
 import datetime
+from app.helper.common import decrypt_password
 
+# mypass = "xyz123"
+# incpass = encrypt_password(mypass)
+# print(f"Encrypted: {incpass}")
+# decPass = decrypt_password(incpass)
+# print(f"Decrypted: {decPass}")
+# exit()
 # Connect to the database where both tables exist: vm_database
 db = mysql.connector.connect(
     host="127.0.0.1",
@@ -46,10 +53,10 @@ for vm_id, ip, username, password in vms:
             #  print("Payload without credentials:", payload)
             #  exit()
         else:
-            print('password and username found')
+            print('password and username found',decrypt_password(password))
             payload = {
                 "username": username,
-                "password": password,
+                "password": decrypt_password(password),
                 "ip": ip
             }
             response = requests.post(api_url, json=payload, timeout=20)

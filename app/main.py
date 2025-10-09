@@ -9,8 +9,9 @@ from app.routers import users,vm_master,vm_status,monitor
 from fastapi.staticfiles import StaticFiles
 from app.core.auth import get_current_user   
 from fastapi.middleware.cors import CORSMiddleware
-app = FastAPI()
 
+Base.metadata.create_all(bind = engine)
+app = FastAPI()
 
 origins = ["*"]
 app.add_middleware(
@@ -21,7 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-Base.metadata.create_all(bind = engine)
+
 app.mount("/logs", StaticFiles(directory="uploads/logs"), name="logs")
 
 app.include_router(users.auth)

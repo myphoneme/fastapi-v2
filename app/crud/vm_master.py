@@ -3,6 +3,7 @@ from app.schemas.vm_master import VMMasterUpdate, VMMasterCreate
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from app.models.vm_master import VMMaster
+from app.helper.common import encrypt_password
 
 
 def get_all_master_vms(db: Session):
@@ -10,7 +11,10 @@ def get_all_master_vms(db: Session):
     return vms
 
 def add_vm(db: Session, vm_data: VMMasterCreate):
-    new_vm = VMMaster(**vm_data.model_dump())
+    data = vm_data.model_dump()
+    if data.get("password"):
+        data["password"] = encrypt_password(data["password"])
+    new_vm = VMMaster(**data)
     db.add(new_vm)
     db.commit()
     db.refresh(new_vm)
@@ -25,6 +29,8 @@ def update_master_vm(
     if not existing_vm:
         return None
     update_data = vm_update.model_dump(exclude_unset=True)
+    if update_data.get("password"):
+        update_data["password"] = encrypt_password(update_data["password"])
     for field, value in update_data.items():
         setattr(existing_vm, field, value)
     db.commit()

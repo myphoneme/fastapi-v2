@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     algorithm : str = Field(..., env="ALGORITHM")
     access_token_expire_minutes : int = Field(..., env="ACCESS_TOKEN_EXPIRE_MINUTES")
     secret_key : str = Field(..., env="SECRET_KEY")
+    fernet_key : str = Field(..., env="FERNET_KEY")
 
     class Config:
         env_file = ".env"

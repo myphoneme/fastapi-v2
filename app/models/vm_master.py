@@ -11,7 +11,7 @@ class VMMaster(Base):
     vm_name = Column(String(500), nullable=False, unique=True)
     ip = Column(String(50), nullable=False)
     username = Column(String(50), nullable=True)
-    password = Column(String(100), nullable=True)  
+    password = Column(String(200), nullable=True)  
     project_name = Column(String(100), nullable=False)
     cluster = Column(String(200), nullable=True)
     node = Column(String(100), nullable=True)
