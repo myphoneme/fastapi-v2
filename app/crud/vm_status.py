@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from app.models.vm_status import VMStatus
-from app.models.vm_master import VMMaster
+# from app.models.vm_master import VMMaster
 from app.schemas.vm_status import VMStatusCreate, VMStatusUpdate
 
 def get_all_vm_statuses(db: Session):
