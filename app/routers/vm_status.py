@@ -13,8 +13,7 @@ from app.core.auth import get_current_user
 
 router = APIRouter(
     prefix="/status",
-    tags=["VM Status"],
-    dependencies=[Depends(get_current_user)]
+    tags=["VM Status"]
 )
 
 @router.get("/", response_model=list[VMStatusResponse])

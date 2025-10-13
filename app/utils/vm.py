@@ -3,6 +3,11 @@ import requests
 import json
 import datetime
 from app.helper.common import decrypt_password
+from pytz import timezone
+import datetime
+
+ist = timezone('Asia/Kolkata')
+now_ist = datetime.datetime.now(ist).strftime('%Y-%m-%d %H:%M:%S')
 
 # mypass = "xyz123"
 # incpass = encrypt_password(mypass)
@@ -13,8 +18,8 @@ from app.helper.common import decrypt_password
 # Connect to the database where both tables exist: vm_database
 db = mysql.connector.connect(
     host="127.0.0.1",
-    user="root",
-    password="",
+    user="remotedbuser",
+    password="remotedbuser",
     database="fastapi_db"
 )
 cursor = db.cursor()
@@ -114,7 +119,7 @@ for vm_id, ip, username, password in vms:
         cursor.execute("""
             INSERT INTO vm_status (vm_id, ip, status, os, cpu_utilization, memory_utilization, disk_utilization, created_at, is_active)
             VALUES (%s,%s, %s, %s, %s, %s, %s,%s,%s)
-        """, (vm_id, ip, status, os_type, cpu_usage, memory_usage, disk_usage, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 1))
+        """, (vm_id, ip, status, os_type, cpu_usage, memory_usage, disk_usage, now_ist, 1))
         db.commit()
 
         print(f"Status data saved for VM {ip}")

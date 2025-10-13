@@ -1,6 +1,7 @@
 import threading
 import time
 import subprocess
+import platform
 from fastapi import APIRouter #, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -17,9 +18,13 @@ vm_status_cache = {}
 def ping_ip(ip: str) -> bool:
     """Ping an IP address and return True if reachable, False otherwise."""
     try:
-        # Windows: use '-n 1', Linux/Mac: use '-c 1'
+        system = platform.system()
+        if system == "Windows":
+            cmd = ["ping", "-n", "1", "-w", "1000", ip]
+        else:  # Linux, Mac
+            cmd = ["ping", "-c", "1", "-W", "1", ip]
         result = subprocess.run(
-            ["ping", "-n", "1", "-w", "1000", ip],
+            cmd,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
@@ -53,3 +58,17 @@ def get_vm_status():
 @router.post("/utilization")
 def vm_status(request: VMRequest):
     return check_vm(request.ip, request.username, request.password)
+
+
+@router.post("/ping_status")
+def ping_status(request: VMRequest):
+    ip = request.ip
+    status = ping_ip(ip)
+    return {"ip": ip, "reachable": status}
+# @app.post("/ping-status")
+# def check_ping_status(request: PingRequest):
+#     is_reachable = ping_ip(str(request.ip))
+#     return {
+#         "ip": request.ip,
+#         "reachable": is_reachable
+#     }

@@ -11,7 +11,7 @@ from app.core.auth import get_current_user
 
 
 auth  = APIRouter(prefix="/auth", tags=["Auth"])
-user  = APIRouter(prefix="/users", tags=["Users Module"], dependencies=[Depends(get_current_user)])
+user  = APIRouter(prefix="/users", tags=["Users Module"])
 
 @user.post("/create", response_model= UserResponse)
 def create_user(userdata:UserCreate, db:Session = Depends(get_db)):
