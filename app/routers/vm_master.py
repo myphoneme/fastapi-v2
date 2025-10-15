@@ -14,7 +14,8 @@ from app.core.auth import get_current_user
 
 router = APIRouter(
     prefix="/vm",
-    tags=["VM Master"]
+    tags=["VM Master"],
+    dependencies=[Depends(get_current_user)]
 )
 
 @router.get("/", response_model=list[VMMasterResponse])

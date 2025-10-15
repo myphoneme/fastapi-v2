@@ -2,17 +2,27 @@ import threading
 import time
 import subprocess
 import platform
-from fastapi import APIRouter #, Depends
+from fastapi import APIRouter,Depends,Header, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.crud.vm_master import get_all_master_vms
-# from app.core.auth import get_current_user  
+from app.core.auth import get_current_user  
 from app.schemas.monitor import VMRequest
 from app.utils.ssh_client import check_vm
+from app.core.config import settings
 
 router = APIRouter(prefix="/monitor", tags=["VM Monitoring"]) #, dependencies=[Depends(get_current_user)]
 
 # Global dictionary to store VM reachability status
+
+INTERNAL_API_TOKEN = settings.internal_token
+
+def verify_internal_token(internal_token: str = Header(None)):
+    if internal_token != INTERNAL_API_TOKEN:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized access",
+        )
 vm_status_cache = {}
 
 def ping_ip(ip: str) -> bool:
@@ -50,18 +60,19 @@ def start_monitoring_thread(db_session_factory):
 # Start the monitoring thread when the module is imported
 start_monitoring_thread(get_db)
 
-@router.get("/ping")
-def get_vm_status():
+@router.get("/ping",)
+def get_vm_status(dependencies=Depends(get_current_user)):
     """API endpoint to get the latest reachability status of all VMs."""
     return list(vm_status_cache.values())
 
 @router.post("/utilization")
-def vm_status(request: VMRequest):
+def vm_status(request: VMRequest,dependencies=Depends(verify_internal_token)):
     return check_vm(request.ip, request.username, request.password)
 
 
 @router.post("/ping_status")
-def ping_status(request: VMRequest):
+def ping_status(request: VMRequest,dependencies=Depends(get_current_user)):
+    """End ping to get the status of the induvisual vm"""
     ip = request.ip
     status = ping_ip(ip)
     return {"ip": ip, "reachable": status}

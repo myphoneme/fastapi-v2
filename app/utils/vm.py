@@ -25,6 +25,7 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 
 api_url = "http://127.0.0.1:8000/monitor/utilization"
+headers = {"internal-token": "WQ2mT2Aq-4lXThGpW_4J4K1uJX7n5P4tGwcj5V7vYGE"}
 
 # Fetch VM credentials from vm_details
 cursor.execute("SELECT id, ip, username, password FROM vm_master where is_active=1")
@@ -47,7 +48,7 @@ for vm_id, ip, username, password in vms:
                 "ip": ip
             }
 
-            response = requests.post(api_url, json=payload, timeout=20)
+            response = requests.post(api_url, json=payload, headers=headers, timeout=20)
             response.raise_for_status()
             data = response.json()
             status = data.get("status", "unknown")
