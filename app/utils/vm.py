@@ -4,10 +4,10 @@ import json
 import datetime
 from app.helper.common import decrypt_password
 from pytz import timezone
-import datetime
+from datetime import datetime
 
 ist = timezone('Asia/Kolkata')
-now_ist = datetime.datetime.now(ist).strftime('%Y-%m-%d %H:%M:%S')
+now_ist = datetime.now(ist).strftime('%Y-%m-%d %H:%M:%S')
 
 # mypass = "xyz123"
 # incpass = encrypt_password(mypass)
