@@ -2,11 +2,26 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from app.models.vm_status import VMStatus
+from datetime import datetime, date, timedelta
+from datetime import time
 # from app.models.vm_master import VMMaster
 from app.schemas.vm_status import VMStatusCreate, VMStatusUpdate
 
-def get_all_vm_statuses(db: Session):
-    return db.query(VMStatus).filter(VMStatus.is_active == 1).all()
+# def get_all_vm_statuses(db: Session):
+#     return db.query(VMStatus).filter(VMStatus.is_active == 1).all()
+
+def get_all_vm_statuses(db: Session, date_filter: date | None = None):
+    target_day = date_filter or datetime.now().date()
+
+    start_dt = datetime.combine(target_day, time.min)  # 00:00:00
+    end_dt   = start_dt + timedelta(days=1)            # next midnight
+
+    query = (
+        db.query(VMStatus)
+          .filter(VMStatus.is_active == 1)
+          .filter(VMStatus.created_at >= start_dt, VMStatus.created_at < end_dt)
+    )
+    return query.all()
 
 def get_vm_status_by_id(db: Session, status_id: int):
     vm_status = db.query(VMStatus).filter(VMStatus.id == status_id, VMStatus.is_active == 1).first()

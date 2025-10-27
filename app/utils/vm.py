@@ -18,8 +18,8 @@ now_ist = datetime.now(ist).strftime('%Y-%m-%d %H:%M:%S')
 # Connect to the database where both tables exist: vm_database
 db = mysql.connector.connect(
     host="127.0.0.1",
-    user="remotedbuser",
-    password="remotedbuser",
+    user="root",
+    password="",
     database="fastapi_db"
 )
 cursor = db.cursor()

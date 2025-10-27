@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from datetime import date
 from app.database import get_db
 from app.schemas.vm_status import VMStatusCreate, VMStatusUpdate, VMStatusResponse
 from app.crud.vm_status import (
@@ -17,9 +18,13 @@ router = APIRouter(
     dependencies=[Depends(get_current_user)]
 )
 
+# @router.get("/", response_model=list[VMStatusResponse])
+# def read_vm_statuses(db: Session = Depends(get_db)):
+#     return get_all_vm_statuses(db)
+
 @router.get("/", response_model=list[VMStatusResponse])
-def read_vm_statuses(db: Session = Depends(get_db)):
-    return get_all_vm_statuses(db)
+def read_vm_statuses(db: Session = Depends(get_db), date_filter: date | None = None):
+    return get_all_vm_statuses(db, date_filter)
 
 @router.get("/{status_id}", response_model=VMStatusResponse)
 def read_vm_status(status_id: int, db: Session = Depends(get_db)):
