@@ -5,6 +5,8 @@ import datetime
 from app.helper.common import decrypt_password
 from pytz import timezone
 from datetime import datetime
+from app.core.config import settings
+
 
 ist = timezone('Asia/Kolkata')
 now_ist = datetime.now(ist).strftime('%Y-%m-%d %H:%M:%S')
@@ -17,15 +19,15 @@ now_ist = datetime.now(ist).strftime('%Y-%m-%d %H:%M:%S')
 # exit()
 # Connect to the database where both tables exist: vm_database
 db = mysql.connector.connect(
-    host="127.0.0.1",
-    user="root",
-    password="",
-    database="fastapi_db"
+    host= settings.db_host,
+    user= settings.db_user,
+    password= settings.db_password,
+    database= settings.db_name
 )
 cursor = db.cursor()
-
+token = settings.internal_token
 api_url = "http://127.0.0.1:8000/monitor/utilization"
-headers = {"internal-token": "WQ2mT2Aq-4lXThGpW_4J4K1uJX7n5P4tGwcj5V7vYGE"}
+headers = {"internal-token": token}
 
 # Fetch VM credentials from vm_details
 cursor.execute("SELECT id, ip, username, password FROM vm_master where is_active=1")
@@ -65,7 +67,7 @@ for vm_id, ip, username, password in vms:
                 "password": decrypt_password(password),
                 "ip": ip
             }
-            response = requests.post(api_url, json=payload, timeout=20)
+            response = requests.post(api_url, json=payload, headers = headers, timeout=20)
             response.raise_for_status()
             data = response.json()
             if data.get("status") == 'not reachable':
