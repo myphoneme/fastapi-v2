@@ -76,6 +76,13 @@ def ping_status(request: VMRequest,dependencies=Depends(get_current_user)):
     ip = request.ip
     status = ping_ip(ip)
     return {"ip": ip, "reachable": status}
+
+# @router.post("/snmp_ping_status")
+# def snmp_ping_status(request: VMRequest):  #,dependencies=Depends(get_current_user)
+#     """End ping to get the status of the induvisual vm using SNMP"""
+#     ip = request.ip
+#     status = snmp_reachable(ip)
+#     return {"ip": ip, "reachable": status}
 # @app.post("/ping-status")
 # def check_ping_status(request: PingRequest):
 #     is_reachable = ping_ip(str(request.ip))

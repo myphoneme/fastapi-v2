@@ -1,6 +1,8 @@
 import paramiko
 import socket
 import subprocess
+from pysnmp.hlapi import *
+# from pysnmp.hlapi import getCmd
 # import re
 # import logging
 
@@ -86,9 +88,32 @@ def get_metrics_windows(ssh_client):
     return cpu_util, mem_util, disks
 
 
+# def snmp_reachable(ip: str, community: str = "public", port: int = 161, timeout: int = 2) -> bool:
+#     """
+#     Check if a device is reachable via SNMP (v2c).
+#     Returns True if reachable, False otherwise.
+#     """
+#     iterator = getCmd(
+#         SnmpEngine(),
+#         CommunityData(community, mpModel=1),  # SNMPv2c
+#         UdpTransportTarget((ip, port), timeout=timeout, retries=0),
+#         ContextData(),
+#         ObjectType(ObjectIdentity("1.3.6.1.2.1.1.3.0"))  # sysUpTime.0
+#     )
+
+#     errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
+
+#     if errorIndication:
+#         return False  # No response or timeout
+#     if errorStatus:
+#         return True   # Responded with error = reachable
+#     return True        # Responded successfully
+
 def check_vm(ip, username, password):
     if not username or not password:
         is_reachable = ping_ip(ip)
+        # if not is_reachable:
+        #     is_reachable = snmp_reachable(ip)
         return {
             "ip": ip,
             "status": "reachable" if is_reachable else "not reachable",
