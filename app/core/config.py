@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     secret_key : str = Field(..., env="SECRET_KEY")
     fernet_key : str = Field(..., env="FERNET_KEY")
     internal_token : str = Field(..., env="INTERNAL_TOKEN")
+    base_url : str = Field(..., env="BASE_URL")
 
     class Config:
         env_file = ".env"

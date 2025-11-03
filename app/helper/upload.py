@@ -18,7 +18,7 @@ async def upload_file(request: Request, file: UploadFile ):
         shutil.copyfileobj(file.file, buffer)
 
     # Use request.base_url to generate full URL dynamically
-    file_url = str(request.base_url) + f"logs/{uid}_{file.filename}"
+    file_url = str(request.base_url) + f"files/{uid}_{file.filename}"
 
     return {
         "file_name": file.filename,
