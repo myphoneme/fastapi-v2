@@ -50,3 +50,11 @@ def download_log_file(filename: str):
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Log file not found.")
     return JSONResponse(content={"file_url": f"{LOGS_URL}/{filename}"})
+
+@router.delete("/delete/{filename}")
+def delete_log_file(filename: str):
+    file_path = os.path.join(LOGS_DIR, filename)
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Log file not found.")
+    os.remove(file_path)
+    return {"detail": f"Log file '{filename}' deleted successfully."}
